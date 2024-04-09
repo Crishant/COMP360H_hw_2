@@ -1,0 +1,14 @@
+function main() {
+  var x,y,z ;
+  x = 52-51;
+  y = get_int_s();
+
+  while (y < 10) do{
+    y = y + x;
+    z = y;
+  }
+  print_int(z);
+
+  return;
+}
+

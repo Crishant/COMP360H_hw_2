@@ -1,0 +1,11 @@
+function main() {
+  var x,y ;
+  y = 2;
+  print_int(y);
+  x = get_int_s();
+  y = x + 5 ;
+
+  print_int(y);
+
+  return ;
+}

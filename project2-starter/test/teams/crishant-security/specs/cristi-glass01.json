@@ -1,0 +1,60 @@
+{
+    "file":     "cristi-test-01.imp",
+    "input":    ["5"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-01.imp",
+    "input":    ["2"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-01.imp",
+    "input":    ["3"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-02.imp",
+    "input":    ["4"],
+    "output":   ["5"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-02.imp",
+    "input":    ["3"],
+    "output":   ["5"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-02.imp",
+    "input":    ["10"],
+    "output":   ["5"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-03.imp",
+    "input":    ["-1"],
+    "output":   ["2"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-03.imp",
+    "input":    ["37"],
+    "output":   ["2"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-03.imp",
+    "input":    ["52"],
+    "output":   ["2"],
+    "except":   "SecurityError"
+}
+
