@@ -1,0 +1,11 @@
+function main(){
+    function test(i) {
+        var y = i > 5;
+        return y;
+    }
+
+    var x = get_int_s();
+    var z = test(x);
+    print(z);
+    return;
+}

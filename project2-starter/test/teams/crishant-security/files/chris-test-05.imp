@@ -1,0 +1,13 @@
+function main(){
+    var x = get_int_s();
+
+    var y = 7;
+
+    if x == 4 then {
+        y = y + 7;
+    }
+
+    print(y);
+
+    return;
+}

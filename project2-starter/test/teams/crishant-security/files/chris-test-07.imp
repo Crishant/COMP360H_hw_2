@@ -1,0 +1,15 @@
+function main(){
+    var x = get_int_s;
+    var y = 9;
+
+    if y == 9 then {
+        if x == 3 then {
+            print(y);
+        }
+        y = y + 1;
+        print(y);
+    }
+    y = y + 4;
+    print(y);
+    return;
+}
