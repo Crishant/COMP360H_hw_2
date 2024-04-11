@@ -1,0 +1,9 @@
+function main () {
+
+    var a = get_int_s ();
+    var a = 5;
+
+    print_int (a);
+
+    return;
+}

@@ -1,0 +1,17 @@
+function main {
+
+    var a = true;
+    var b = false;
+
+    var c = get_bool_s();
+
+    if (c){
+        print_bool (a);
+    }
+    else {
+        print_bool (b)
+    }
+
+    return;
+
+}
