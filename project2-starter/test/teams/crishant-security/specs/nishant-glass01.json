@@ -1,0 +1,48 @@
+// Isn't nishant-test-01 leaking information in some way?
+{
+  "file":     "nishant-test-01.imp",
+  "input":    ["1","2"],
+  "output":   []
+}
+
+{
+  "file":     "nishant-test-01.imp",
+  "input":    ["1","1"],
+  "except":   "Security Error"
+}
+
+{
+  "file":     "nishant-test-02.imp",
+  "input":    ["true"],
+  "except":   "Security Error"
+}
+
+{
+  "file":     "nishant-test-02.imp",
+  "input":    ["false"],
+  "except":   "Security Error"
+}
+
+{
+  "file":     "nishant-test-03.imp",
+  "input":    ["true"],
+  "except":   "Security Error"
+}
+
+{
+  "file":     "nishant-test-03.imp",
+  "input":    ["false"],
+  "except":   "Security Error"
+}
+
+{
+  "file":     "nishant-test-04.imp",
+  "input":    ["2", "2"],
+  "except":   "Security Error"
+}
+
+{
+  "file":     "nishant-test-05.imp",
+  "input":    ["2"],
+  "output":  ["5"]
+}

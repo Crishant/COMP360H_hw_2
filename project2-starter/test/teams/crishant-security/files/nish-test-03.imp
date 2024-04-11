@@ -1,0 +1,14 @@
+function main {
+
+    var c = get_bool_s();
+
+    if (c){
+        print_bool (true);
+    }
+    else {
+        print_bool (false)
+    }
+
+    return;
+
+}

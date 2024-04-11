@@ -1,0 +1,14 @@
+function main() {
+
+    var x = get_int();
+    var y = get_int_s();
+
+    var z = x + y;
+
+    if (x == y) {
+        print_int(z);
+    }
+
+    return;
+
+}

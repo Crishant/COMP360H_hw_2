@@ -1,0 +1,18 @@
+function main () {
+
+    var a = get_int_s ();
+    var b = get_int_s ();
+
+    var c = helper (a,b);
+
+    print_int (c);
+
+    return;
+
+}
+
+function helper (var a, var b) {
+
+    return a + b + 2;
+
+}
