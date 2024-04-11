@@ -1,0 +1,23 @@
+function main {
+
+    var a = 6;
+    var b = get_int_s ();
+
+    print_int ("5");
+    print_int (a);
+
+    print_int_s ("5");
+    print_int_s (a);
+    print_int_s (b);
+
+    var c = true;
+    var d = get_bool_s ();
+
+    print_bool (true);
+    print_bool (c);
+
+    print_bool_s (true);
+    print_bool_s (c);
+    print_bool_s (d);
+
+}
