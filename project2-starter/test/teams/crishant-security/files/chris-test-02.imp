@@ -1,0 +1,10 @@
+function main(){
+    var x = get_int_s();
+    var y = 4;
+
+    if x == 4 then {
+        print(y);
+    }
+
+    return; 
+}

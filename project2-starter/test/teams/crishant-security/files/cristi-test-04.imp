@@ -8,5 +8,7 @@ function main() {
     z = y;
   }
   print_int(z);
+
+  return;
 }
 

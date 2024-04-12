@@ -1,0 +1,13 @@
+function main(){
+    var x = get_int_s();
+    var y = true;
+
+    if y then {
+        print(x);
+        print_int(4);
+    }
+
+    print("worked");
+
+    return;
+}
