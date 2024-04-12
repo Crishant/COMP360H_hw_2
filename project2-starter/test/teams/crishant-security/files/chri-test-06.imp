@@ -1,0 +1,22 @@
+function main(){
+    var x = get_int_s();
+
+    var y = 15;
+
+    var z = get_int_s();
+
+    while (z != x) do {
+        print(y);
+        z = x;
+    }
+
+    while (y > 14) do {
+        print(y);
+        y = y - 1;
+    }
+
+    if y == 15 then {
+        print("this should print")
+    }
+    return; 
+}

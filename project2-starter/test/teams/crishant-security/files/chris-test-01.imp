@@ -1,0 +1,9 @@
+function main(){
+    var x = get_int_s();
+
+    if x == 3 then {
+        print(3);
+    }
+
+    return;
+}

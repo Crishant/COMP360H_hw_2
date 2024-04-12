@@ -1,0 +1,29 @@
+function main () {
+
+    var a = get_int_s ();
+    var b = get_int_s ();
+
+    var result = helper_1 (a,b);
+    print_int (result);
+
+    return;
+
+}
+
+function helper_1 (var a, var b) {
+
+    var c = a +1 ;
+    var d = b - 1 ;
+
+    return helper_2 (c,d);
+}
+
+function helper_2 (var a, var b) {
+
+    if (a < b) {
+        return 1;
+    }
+
+    return 0;
+
+}
