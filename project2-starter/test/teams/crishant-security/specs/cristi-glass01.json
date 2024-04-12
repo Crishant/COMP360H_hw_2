@@ -19,42 +19,167 @@
 {
     "file":     "cristi-test-02.imp",
     "input":    ["4"],
-    "output":   ["5"],
     "except":   "SecurityError"
 }
 
 {
     "file":     "cristi-test-02.imp",
     "input":    ["3"],
-    "output":   ["5"],
     "except":   "SecurityError"
 }
 
 {
     "file":     "cristi-test-02.imp",
     "input":    ["10"],
-    "output":   ["5"],
     "except":   "SecurityError"
 }
 
 {
     "file":     "cristi-test-03.imp",
     "input":    ["-1"],
-    "output":   ["2"],
     "except":   "SecurityError"
 }
 
 {
     "file":     "cristi-test-03.imp",
     "input":    ["37"],
-    "output":   ["2"],
     "except":   "SecurityError"
 }
 
 {
     "file":     "cristi-test-03.imp",
     "input":    ["52"],
-    "output":   ["2"],
     "except":   "SecurityError"
 }
+
+{
+    "file":     "cristi-test-04.imp",
+    "input":    ["39"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-04.imp",
+    "input":    ["32"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-04.imp",
+    "input":    ["33"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-05.imp",
+    "input":    ["1"],
+    "output":   ["52"]
+}
+
+{
+    "file":     "cristi-test-05.imp",
+    "input":    ["2"],
+    "output":   ["52"]
+}
+
+{
+    "file":     "cristi-test-05.imp",
+    "input":    ["3"],
+    "output":   ["52"]
+}
+
+{
+    "file":     "cristi-test-06.imp",
+    "input":    ["3"],
+    "output":   ["1"]
+}
+
+{
+    "file":     "cristi-test-06.imp",
+    "input":    ["2"],
+    "output":   ["1"]
+}
+
+{
+    "file":     "cristi-test-06.imp",
+    "input":    ["5"],
+    "output":   ["1"]
+}
+
+{
+    "file":     "cristi-test-07.imp",
+    "input":    ["3"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-07.imp",
+    "input":    ["10"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-07.imp",
+    "input":    ["100"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-08.imp",
+    "input":    ["100","1"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-08.imp",
+    "input":    ["89","33"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-08.imp",
+    "input":    ["2","3"],
+    "except":   "SecurityError"
+}
+
+{
+    "file":     "cristi-test-09.imp",
+    "input":    ["2","3"],
+    "output":   ["5"]
+}
+
+
+{
+    "file":     "cristi-test-09.imp",
+    "input":    ["2","3"],
+    "output":   ["5"]
+}
+
+
+{
+    "file":     "cristi-test-09.imp",
+    "input":    ["2","3"],
+    "output":   ["5"]
+}
+
+{
+    "file":     "cristi-test-10.imp",
+    "input":    ["2","3"],
+    "output":   ["4"]
+}
+
+{
+    "file":     "cristi-test-10.imp",
+    "input":    ["2","3"],
+    "output":   ["4"]
+}
+
+{
+    "file":     "cristi-test-10.imp",
+    "input":    ["2","3"],
+    "output":   ["4"]
+}
+
+
+
 

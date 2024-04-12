@@ -1,0 +1,12 @@
+function main() {
+  var x,y ;
+  y = get_int_s();
+  x = f1(y);
+  print_int(x);
+}
+
+function f1(y) {
+  var z;
+  z = y;
+  return z; 
+}
