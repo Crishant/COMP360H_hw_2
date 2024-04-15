@@ -29,6 +29,8 @@
   * of the incorrect type.  s is any (hopefuly useful) message.
   *)
  exception TypeError of string
+
+ exception SecurityError
  
  (* Values.
   *)
