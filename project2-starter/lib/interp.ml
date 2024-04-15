@@ -31,18 +31,32 @@
  exception TypeError of string
 
  exception SecurityError
- 
- (* Values.
-  *)
- module Value = struct
-   type t = 
+
+ module SecurityLabel = struct
+    type t =
+        | High
+        | Low
+
+    let to_string (v : t) : string =
+        match v with
+        | High -> "High Security"
+        | Low -> "Low Security"
+
+    let compare (v : t) (v' : t) : t =
+        match (v, v') with
+        | (Low, Low) -> Low
+        | _ -> High
+end
+
+module Primval = struct
+   type t =
      | V_Undefined
      | V_None
      | V_Int of int
      | V_Bool of bool
      | V_Str of string
      [@@deriving show]
- 
+
    (* to_string v = a string representation of v (more human-readable than
     * `show`.
     *)
@@ -53,6 +67,20 @@
      | V_Int n -> Int.to_string n
      | V_Bool b -> Bool.to_string b
      | V_Str s -> s
+ end
+
+ (* Values.
+  *)
+ module Value = struct
+    type t = Val of Primval.t * SecurityLabel.t
+ 
+   (* to_string v = a string representation of v (more human-readable than
+    * `show`.
+    *)
+   let to_string (v : t) : string =
+     match v with
+     | Val (x, y) -> Primval.to_string (x) ^ SecurityLabel.to_string (y)
+
  end
  
  (* An implementation of the I/O API.  This is a little bit complex, because
