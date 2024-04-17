@@ -496,17 +496,17 @@ module Primval = struct
        (* Skip statement. Case where there is no "else" within an if statement. *)
        | S.Skip -> sigma
        (* Variable declaration. Accounts for multiple declarations within a line (therefore taking a list). Evaluates expression and assigns values to its variables (recursively within list). *)
-       | S.VarDec l ->
-         (match l with
+       | S.VarDec llist ->
+         (match llist with
           | [] -> sigma
           | (var, e) :: xs ->
            match e with
            | Some e' ->
-             let (v, sigma') = eval sigma e' f in
+             let (v, sigma') = eval sigma e' f l in
              let sigma2 = Env.newVarDec sigma' var v in
-             exec_stm (S.VarDec xs) sigma2 f
-           | None -> let sigma' = Env.newVarDec sigma var Value.V_Undefined in
-             exec_stm (S.VarDec xs) sigma' f)
+             exec_stm (S.VarDec xs) sigma2 f l
+           | None -> let sigma' = Env.newVarDec sigma var (Value.Val(Primval.V_None, l)) in
+             exec_stm (S.VarDec xs) sigma' f l)
        (* Evaluates expression within statement. *)
        | S.Expr e ->
          let (_, sigma') = eval sigma e f in
