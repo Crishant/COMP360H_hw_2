@@ -507,14 +507,14 @@ module Primval = struct
              exec_stm (S.VarDec xs) sigma2 f
            | None -> let sigma' = Env.newVarDec sigma var Value.V_Undefined in
              exec_stm (S.VarDec xs) sigma' f)
-       (* Evaluates expression within statement. *)
+       (* DONE: Evaluates expression within statement. *)
        | S.Expr e ->
-         let (_, sigma') = eval sigma e f in
+         let (_, sigma') = eval sigma e f l in
          sigma'
-       (*BLOCK MATCH: Given a list of statements, adds a new environment to environment stack, evaluates the whole list of statements under the current frame,
+       (* DONE: BLOCK MATCH: Given a list of statements, adds a new environment to environment stack, evaluates the whole list of statements under the current frame,
           and removes top environment frame when finished*)
-       | S.Block l -> (let sigma' = Env.addBlock sigma in
-                         let sigma2 = stm_list l sigma' f in
+       | S.Block slist -> (let sigma' = Env.addBlock sigma in
+                         let sigma2 = stm_list slist sigma' f l in
                              match sigma2 with
                              | Env.FunctionFrame _ -> Env.removeBlock sigma2
                              | Env.ReturnFrame _ -> sigma2)
@@ -611,7 +611,7 @@ module Primval = struct
            | _ -> raise (TypeError "Non-boolean value in while condition")
  
      (*HELPER: Given list of statements, evalates each statement under environment given and updated.*)
-     and stm_list (ss : S.t list) (sigma : Env.t) (f : Fun.t) : Env.t =
+     and stm_list (ss : S.t list) (sigma : Env.t) (f : Fun.t) (l : SecurityLabel.t): Env.t =
        match ss with
        | [] -> sigma
        | s :: rest ->
