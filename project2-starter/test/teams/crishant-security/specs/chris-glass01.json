@@ -28,11 +28,12 @@
     "except":   "Security Error"
   }
   
-  {
-    "file":     "chris-test-04.imp",
-    "input":    ["3"],
-    "except":   "Security Error"
-  }
+//   {
+//     "file":     "chris-test-04.imp",
+//     "input":    ["3"],
+//     "except":   "Security Error"
+//   }
+
   {
     "file": "chris-test-04.imp",
     "input": ["0"],

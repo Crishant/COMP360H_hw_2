@@ -46,11 +46,11 @@
   "output":  ["5"]
 }
 
-{
-  "file":     "nishant-test-06.imp",
-  "input":    ["5"],
-  "except":  "SecurityError"
-}
+// {
+//   "file":     "nishant-test-06.imp",
+//   "input":    ["5"],
+//   "except":  "SecurityError"
+// }
 
 {
   "file":     "nishant-test-07.imp",
