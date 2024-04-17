@@ -454,13 +454,13 @@ module Primval = struct
      | E.Not e ->
        let (v, sigma') = eval sigma e f in
        (match v with
-        | Value.V_Bool b -> (Value.V_Bool (not b), sigma')
+        | Primval.V_Bool b -> (Value.Val(Primval.V_Bool (not b), l) , sigma')
         | _ -> failwith "Type Error")
      (* Negative of expression e. First evaluates e and then returns its negative. *)
      | E.Neg e ->
        let (v, sigma') = eval sigma e f in
        (match v with
-        | Value.V_Int n -> (Value.V_Int (-n), sigma')
+        | Primval.V_Int n -> (Value.Val(Primval.V_Int (-n), l) , sigma')
         | _ -> failwith "Type Error")
      (*CALL MATCH: Given a list of expressions, evaluates all expressions. Then matches given function identifier and returns list of params and the body.
         Zips param identifiers with values from expression list, and executes body in a new frame*)
@@ -480,12 +480,12 @@ module Primval = struct
         | _ -> failwith "Not a return frame"))
  
    (*HELPER: Given a list of expressions and an environment, returns list of values from expressions and updated environment frame*)
-   and eval_all(el: E.t list) (sigma: Env.t) (f: Fun.t) : Value.t list * Env.t =
+   and eval_all(el: E.t list) (sigma: Env.t) (f: Fun.t)(l: SecurityLabel.t ): Value.t list * Env.t =
    match el with
    | [] -> ([], sigma)
    | x :: xs ->
-     let (v, sigma') = eval sigma x f  in
-     let (vs, sigma2) = eval_all xs sigma' f in
+     let (v, sigma') = eval sigma x f l  in
+     let (vs, sigma2) = eval_all xs sigma' f l in
      (v::vs, sigma2)
  
      (* FUNCTION exec_stm (recursive): Executes statements. Takes in statement stm, environment sigma, and function t and returns the updated environment. *)
