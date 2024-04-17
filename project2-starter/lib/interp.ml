@@ -529,31 +529,31 @@ module Primval = struct
        | S.While (e, s) -> loop e s sigma f
        (* Return case with value from expression e. Calls helper function to create a return frame with value v. *)
        | S.Return Some e ->
-         let (Value.Val (v1,l1), _) = eval sigma e f l in
-         Env.newReturnFrame Value.Val (v1,l1)
+         let v, _ = eval sigma e f l in
+         Env.newReturnFrame v
        (* Return case with no value. Creates new return frame with None. *)
        | S.Return None -> Env.newReturnFrame (Value.V_None,l)
      (*HELPER: For while loops. Evaluates given expression under the environment frame. If false then returns updated frame. If true then adds a new environment frame onto frame stack.
         Then checks evaluates the block. If a return frame is given, we return said return frame. Else, we evaluate the loop again. After finished, we remove top
         environment frame or return return frame.*)
-     and loop (e : E.t) (s : S.t) (sigma : Env.t) (f : Fun.t) : Env.t =
-       let (v, sigma') = eval sigma e f in
-       match v with
-       | Value.V_Bool false -> sigma'
-       | Value.V_Bool true ->
+     and loop (e : E.t) (s : S.t) (sigma : Env.t) (f : Fun.t) (l: SecurityLabel.t): Env.t =
+       let (Value.Val(b,l'), sigma') = eval sigma e f l in
+       match b with
+       | Primval.V_Bool false -> sigma'
+       | Primval.V_Bool true ->
         ( match s with
          | S.Block s' -> let sigma2 = Env.addBlock sigma' in
-         let sigma3 = stm_list s' sigma2 f in
+         let sigma3 = stm_list s' sigma2 f l' in
          (match sigma3 with
           | Env.ReturnFrame _ -> sigma3
-          | Env.FunctionFrame _ -> let sigma4 = loop e s sigma3 f in
+          | Env.FunctionFrame _ -> let sigma4 = loop e s sigma3 f l in
                                      (match sigma4 with
                                      | Env.FunctionFrame _ ->  Env.removeBlock sigma4
                                      | Env.ReturnFrame _ -> sigma4))
-         | _ -> let sigma2 = exec_stm s sigma' f in
+         | _ -> let sigma2 = exec_stm s sigma' f l' in
                (match sigma2 with
                   | Env.ReturnFrame _ -> sigma2
-                  | Env.FunctionFrame _ -> loop e s sigma2 f))
+                  | Env.FunctionFrame _ -> loop e s sigma2 f l))
        | _ -> raise (TypeError "Non-boolean value in while condition")
  
  
@@ -562,9 +562,9 @@ module Primval = struct
        match ss with
        | [] -> sigma
        | s :: rest ->
-         let sigma' = exec_stm s sigma f in
+         let sigma' = exec_stm s sigma f l in
          (match sigma' with
-          | Env.FunctionFrame _ -> stm_list rest sigma' f
+          | Env.FunctionFrame _ -> stm_list rest sigma' f l
           | Env.ReturnFrame _ -> sigma')
      
  
