@@ -509,12 +509,12 @@ module Primval = struct
              exec_stm (S.VarDec xs) sigma' f l)
        (* Evaluates expression within statement. *)
        | S.Expr e ->
-         let (_, sigma') = eval sigma e f in
+         let (_, sigma') = eval sigma e f l in
          sigma'
-       (*BLOCK MATCH: Given a list of statements, adds a new environment to environment stack, evaluates the whole list of statements under the current frame,
+       (* DONE: BLOCK MATCH: Given a list of statements, adds a new environment to environment stack, evaluates the whole list of statements under the current frame,
           and removes top environment frame when finished*)
-       | S.Block l -> (let sigma' = Env.addBlock sigma in
-                         let sigma2 = stm_list l sigma' f in
+       | S.Block slist -> (let sigma' = Env.addBlock sigma in
+                         let sigma2 = stm_list slist sigma' f l in
                              match sigma2 with
                              | Env.FunctionFrame _ -> Env.removeBlock sigma2
                              | Env.ReturnFrame _ -> sigma2)
@@ -532,7 +532,18 @@ module Primval = struct
          let (Value.Val (v1,l1), _) = eval sigma e f l in
          Env.newReturnFrame Value.Val (v1,l1)
        (* Return case with no value. Creates new return frame with None. *)
-       | S.Return None -> Env.newReturnFrame Value.V_None
+       | S.Return None -> Env.newReturnFrame (Value.V_None,l)
+       (*FOR MATCH: Given a declaration, expression, expression and body, declares or assigns value to identifier, checks to see if identifier holds a certain condition,
+          then increments identifier. If first expression is true, then the body is executed.*)
+       (* | S.For (dec, e1, e2, sl) ->
+         (match dec with
+          | S.VarDec l -> let sigma' = Env.addBlock sigma in 
+                         exec_stm (S.VarDec l) sigma' f |> loop3 e1 e2 sl f |> Env.removeBlock
+          | S.Expr exp ->
+            (match exp with
+             | E.Assign (_, _) -> let (_, sigma') = eval sigma exp f in loop2 e1 e2 sl f sigma'
+             | _ -> failwith "Invalid expression in for loop") *)
+          (* | _ -> failwith "Invalid for loop declaration") *)
      (*HELPER: For while loops. Evaluates given expression under the environment frame. If false then returns updated frame. If true then adds a new environment frame onto frame stack.
         Then checks evaluates the block. If a return frame is given, we return said return frame. Else, we evaluate the loop again. After finished, we remove top
         environment frame or return return frame.*)
@@ -558,7 +569,7 @@ module Primval = struct
  
  
      (*HELPER: Given list of statements, evalates each statement under environment given and updated.*)
-     and stm_list (ss : S.t list) (sigma : Env.t) (f : Fun.t) : Env.t =
+     and stm_list (ss : S.t list) (sigma : Env.t) (f : Fun.t) (l : SecurityLabel.t): Env.t =
        match ss with
        | [] -> sigma
        | s :: rest ->
