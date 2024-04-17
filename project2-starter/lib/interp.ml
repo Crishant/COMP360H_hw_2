@@ -398,24 +398,24 @@ module Primval = struct
  end
  
  (* FUNCTION binop: Matches values to the correct BINOP expression. Takes in BINOP operand and two values to compute operand on and returns its value t. *)
- let binop (op : E.binop) (v : Value.t) (v' : Value.t) : Value.t =
+ let binop (op : E.binop) (v : Primval.t) (v' : Primval.t) : Primval.t =
    match (op, v, v') with
-   | (E.Plus, Value.V_Int n, Value.V_Int n') -> Value.V_Int (n + n')
-   | (E.Minus, Value.V_Int n, Value.V_Int n') -> Value.V_Int(n - n')
-   | (E.Div, Value.V_Int n, Value.V_Int n') -> Value.V_Int(n / n')
-   | (E.Times, Value.V_Int n, Value.V_Int n') -> Value.V_Int (n * n')
-   | (E.And, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool (n && n')
-   | (E.Mod, Value.V_Int n, Value.V_Int n') -> Value.V_Int (n mod n')
-   | (E.Or, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool(n || n')
-   | (E.Eq, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool (n = n')
-   | (E.Eq, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n = n')
-   | (E.Le, Value.V_Int n, Value.V_Int n') -> Value.V_Bool (n <= n')
-   | (E.Ge, Value.V_Int n, Value.V_Int n') -> Value.V_Bool (n >= n')
-   | (E.Ne, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool (n <> n')
-   | (E.Ne, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n <> n')
-   | (E.Lt, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n < n')
-   | (E.Gt, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n > n')
-   | _ -> raise (TypeError ("Arg 1: " ^ Value.to_string v ^ "Arg 2:" ^ Value.to_string v' ^ "Operator: Unknown"))
+   | (E.Plus, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int (n + n')
+   | (E.Minus, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int(n - n')
+   | (E.Div, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int(n / n')
+   | (E.Times, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int (n * n')
+   | (E.And, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool (n && n')
+   | (E.Mod, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int (n mod n')
+   | (E.Or, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool(n || n')
+   | (E.Eq, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool (n = n')
+   | (E.Eq, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n = n')
+   | (E.Le, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool (n <= n')
+   | (E.Ge, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool (n >= n')
+   | (E.Ne, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool (n <> n')
+   | (E.Ne, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n <> n')
+   | (E.Lt, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n < n')
+   | (E.Gt, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n > n')
+   | _ -> raise (TypeError ("Arg 1: " ^ Primval.to_string v ^ "Arg 2:" ^ Primval.to_string v' ^ "Operator: Unknown"))
  
  (*HELPER: given a list of identifiers and values, returns list of tuples with identifier and value*)
  let rec zip (l1 : Ast.Id.t list) (l2 : Value.t list) : (Ast.Id.t * Value.t) list =
@@ -425,20 +425,23 @@ module Primval = struct
    | _ -> failwith @@ "No lists"
  
    (* FUNCTION eval (recursive): Evaluates Expressions. Takes in environment sigma, expression e and function t (for Call) and returns the expression's value and updated environment. *)
-   let rec eval (sigma : Env.t) (e : E.t) (f: Fun.t) : Value.t * Env.t =
+   let rec eval (sigma : Env.t) (e : E.t) (f: Fun.t) (l: SecurityLabel.t ): Value.t * Env.t =
      match e with
-     (* Variable Lookup. *)
-     | E.Var x -> (Env.lookup sigma x, sigma)
-     (* Integer expression. *)
-     | E.Num n -> (Value.V_Int n, sigma)
+     (* DONE: Variable Lookup. *)
+     | E.Var x -> 
+      let Value.Val(v, l') = Env.lookup sigma x in
+      let lnew = SecurityLabel.compare l l' in
+          (Value.Val(v, lnew ), sigma)
+     (* DONE: Integer expression.*)
+     | E.Num n -> (Value.Val (Primval.V_Int n, l), sigma)
      (* Boolean expression. *)
-     | E.Bool b -> (Value.V_Bool b, sigma)
-     (* String expression. *)
-     | E.Str s -> (Value.V_Str s, sigma)
+     | E.Bool b -> (Value.Val(Primval.V_Bool b, l), sigma)
+     (* DONE: String expression. *)
+     | E.Str s -> (Value.Val(Primval.V_Str s, l) , sigma)
      (* Calls BINOP expression. Makes recursive call to evaluate each internal expression. *)
      | E.Binop (op, e1, e2) ->
-       let (v1, sigma1) = eval sigma e1 f in
-       let (v2, sigma2) = eval sigma1 e2 f in
+       let (v1, sigma1) = eval sigma e1 f l in
+       let (v2, sigma2) = eval sigma1 e2 f l in
        (binop op v1 v2, sigma2)
      (* Assign value in expression e to x. *)
      | E.Assign (x, e) ->
