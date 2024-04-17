@@ -526,7 +526,7 @@ module Primval = struct
           | Primval.V_Bool false -> exec_stm s1 sigma' f l1
           | _ -> raise (TypeError "Non-boolean value in if condition"))
        (*WHILE MATCH: Given an expression and a body, evaluates expression and continues to evaluate body until expression returns false*)
-       | S.While (e, s) -> loop e s sigma f
+       | S.While (e, s) -> loop e s sigma f l
        (* Return case with value from expression e. Calls helper function to create a return frame with value v. *)
        | S.Return Some e ->
          let (v, _) = eval sigma e f l in
