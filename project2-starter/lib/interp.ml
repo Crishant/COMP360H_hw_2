@@ -135,112 +135,115 @@ module Primval = struct
      [
        ("print_bool", fun vs ->
          match vs with
-         | [Value.V_Bool n] -> 
-           outputnl (!out_channel) (Bool.to_string n) ; Value.V_None
-         | _ -> raise @@ TypeError "Bad argument type for print_bool"
+         | [Value.Val (Primval.V_Bool b, SecurityLabel.Low)] -> 
+          outputnl (!out_channel) (Bool.to_string b) ; Value.Val (Primval.V_None, SecurityLabel.Low)
+        | [Value.Val (Primval.V_Bool _, SecurityLabel.High)] -> 
+         raise @@ SecurityError
+        | _ -> raise @@ TypeError "Bad argument type for print_bool"
        )
      ; ("get_bool", fun vs ->
          match vs with
-         | [] -> Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
+         | [] -> Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)) , SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for get_bool"
        )
      ; ("prompt_bool", fun vs ->
          match vs with
-         | [Value.V_Str s] ->
+         | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] ->
            if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
+             Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for prompt_bool"
        )
      ; ("print_int", fun vs ->
          match vs with
-         | [Value.V_Int n] -> 
-           outputnl (!out_channel) (Int.to_string n) ; Value.V_None
+         | [Value.Val (Primval.V_Int n, SecurityLabel.Low)] -> 
+           outputnl (!out_channel) (Int.to_string n) ; Value.Val (Primval.V_None, SecurityLabel.Low)
+         | [Value.Val (Primval.V_Int _, SecurityLabel.High)] -> 
+            raise @@ SecurityError
          | _ -> raise @@ TypeError "Bad argument type for print_int"
        )
      ; ("get_int", fun vs ->
          match vs with
-         | [] -> Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
+         | [] -> Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for get_int"
        )
      ; ("prompt_int", fun vs ->
          match vs with
-         | [Value.V_Str s] ->
+         | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] ->
            if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
+             Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for prompt_int"
        )
      ; ("print_str", fun vs ->
           match vs with
-          | [Value.V_Str s] -> 
-            outputnl (!out_channel) s ; Value.V_None
+          | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] -> 
+            outputnl (!out_channel) s ; Value.Val (Primval.V_None, SecurityLabel.Low)
           | _ -> raise @@ TypeError "Bad argument type for print_s"
        )
      ; ("get_str", fun vs ->
          match vs with
-         | [] -> Value.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s))
+         | [] -> Value.Val (Primval.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for get_str"
        )
      ; ("prompt_str", fun vs ->
          match vs with
-         | [Value.V_Str s] ->
+         | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] ->
            if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s))
+             Value.Val (Primval.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for prompt_str"
        )
      ; ("print_bool_s", fun vs ->
-         match vs with
-         | [Value.V_Bool n] -> 
-           outputnl (!out_channel) (Bool.to_string n) ; Value.V_None
-         | _ -> raise @@ TypeError "Bad argument type for print_bool_s"
+      match vs with
+      | [Value.Val (Primval.V_Bool b, _)] -> 
+       outputnl (!out_channel) (Bool.to_string b) ; Value.Val (Primval.V_None, SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for print_bool_s"
        )
      ; ("get_bool_s", fun vs ->
-         match vs with
-         | [] -> Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
-         | _ -> raise @@ TypeError "Bad argument type for get_bool_s"
-       )
+      match vs with
+      | [] -> Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)) , SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for get_bool_s"       
+      )
      ; ("prompt_bool_s", fun vs ->
-         match vs with
-         | [Value.V_Str s] ->
-           if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
-         | _ -> raise @@ TypeError "Bad argument type for prompt_bool_s"
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] ->
+        if !show_prompts then output (!out_channel) s else () ;
+          Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for prompt_bool_s"
        )
      ; ("print_int_s", fun vs ->
-         match vs with
-         | [Value.V_Int n] -> 
-           outputnl (!out_channel) (Int.to_string n) ; Value.V_None
-         | _ -> raise @@ TypeError "Bad argument type for print_int_s"
+      match vs with
+      | [Value.Val (Primval.V_Int n, _)] -> 
+        outputnl (!out_channel) (Int.to_string n) ; Value.Val (Primval.V_None, SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for print_int_s"
        )
      ; ("get_int_s", fun vs ->
-         match vs with
-         | [] -> Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
-         | _ -> raise @@ TypeError "Bad argument type for get_int_s"
+      match vs with
+      | [] -> Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for get_int_s"
        )
      ; ("prompt_int_s", fun vs ->
-         match vs with
-         | [Value.V_Str s] ->
-           if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
-         | _ -> raise @@ TypeError "Bad argument type for prompt_int_s"
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] ->
+        if !show_prompts then output (!out_channel) s else () ;
+          Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for prompt_int_s"
        )
      ; ("print_str_s", fun vs ->
-          match vs with
-          | [Value.V_Str s] -> 
-            outputnl (!out_channel) s ; Value.V_None
-          | _ -> raise @@ TypeError "Bad argument type for print_str_s"
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] -> 
+        outputnl (!out_channel) s ; Value.Val (Primval.V_None, SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for print_str_s"
        )
      ; ("get_str_s", fun vs ->
-         match vs with
-         | [] -> Value.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s))
-         | _ -> raise @@ TypeError "Bad argument type for get_str_s"
+      match vs with
+      | [] -> Value.Val (Primval.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for get_str_s"
        )
      ; ("prompt_str_s", fun vs ->
-         match vs with
-         | [Value.V_Str s] ->
-           if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s))
-         | _ -> raise @@ TypeError "Bad argument type for prompt_str_s"
-       )
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] ->
+        if !show_prompts then output (!out_channel) s else () ;
+          Value.Val (Primval.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for prompt_str_s"       )
      ] |> List.to_seq |> IdentMap.of_seq
  
    (* do_call f vs invokes the API function corresponding to `f` with argument
