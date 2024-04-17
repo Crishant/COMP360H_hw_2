@@ -438,11 +438,13 @@ module Primval = struct
      | E.Bool b -> (Value.Val(Primval.V_Bool b, l), sigma)
      (* DONE: String expression. *)
      | E.Str s -> (Value.Val(Primval.V_Str s, l) , sigma)
-     (* Calls BINOP expression. Makes recursive call to evaluate each internal expression. *)
+     (* DONE: Calls BINOP expression. Makes recursive call to evaluate each internal expression. *)
      | E.Binop (op, e1, e2) ->
-       let (v1, sigma1) = eval sigma e1 f l in
-       let (v2, sigma2) = eval sigma1 e2 f l in
-       (binop op v1 v2, sigma2)
+       let (Value.Val (v1, l1), sigma1) = eval sigma e1 f l in
+       let (Value.Val (v2, l2), sigma2) = eval sigma1 e2 f l in
+       let newval = binop op v1 v2 in
+       let lnew = SecurityLabel.compare l1 l2
+       (Value.Val (Primval newval, lnew), sigma2)
      (* Assign value in expression e to x. *)
      | E.Assign (x, e) ->
        let (v, sigma') = eval sigma e f in
