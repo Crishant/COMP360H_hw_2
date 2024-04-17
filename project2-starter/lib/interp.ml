@@ -533,17 +533,6 @@ module Primval = struct
          Env.newReturnFrame Value.Val (v1,l1)
        (* Return case with no value. Creates new return frame with None. *)
        | S.Return None -> Env.newReturnFrame Value.V_None
-       (*FOR MATCH: Given a declaration, expression, expression and body, declares or assigns value to identifier, checks to see if identifier holds a certain condition,
-          then increments identifier. If first expression is true, then the body is executed.*)
-       (* | S.For (dec, e1, e2, sl) ->
-         (match dec with
-          | S.VarDec l -> let sigma' = Env.addBlock sigma in 
-                         exec_stm (S.VarDec l) sigma' f |> loop3 e1 e2 sl f |> Env.removeBlock
-          | S.Expr exp ->
-            (match exp with
-             | E.Assign (_, _) -> let (_, sigma') = eval sigma exp f in loop2 e1 e2 sl f sigma'
-             | _ -> failwith "Invalid expression in for loop") *)
-          (* | _ -> failwith "Invalid for loop declaration") *)
      (*HELPER: For while loops. Evaluates given expression under the environment frame. If false then returns updated frame. If true then adds a new environment frame onto frame stack.
         Then checks evaluates the block. If a return frame is given, we return said return frame. Else, we evaluate the loop again. After finished, we remove top
         environment frame or return return frame.*)
@@ -567,48 +556,6 @@ module Primval = struct
                   | Env.FunctionFrame _ -> loop e s sigma2 f))
        | _ -> raise (TypeError "Non-boolean value in while condition")
  
-     (*HELPER: For for loops. Used for case when first statement given in for loop is an identifier declaration. Similar structure to that of While loops*)
-     and loop3 (e : E.t) (incr : E.t) (s : S.t) (f : Fun.t) (sigma : Env.t): Env.t =
-     let (v, sigma') = eval sigma e f in
-           match v with
-           | Value.V_Bool false -> sigma'
-           | Value.V_Bool true ->
-            ( match s with
-             | S.Block s' -> let sigma2 = sigma' in
-             let sigma3 = stm_list s' sigma2 f in
-             (match sigma3 with
-              | Env.ReturnFrame _ -> sigma3
-              | Env.FunctionFrame _ -> let (_,sigma3') = eval sigma3 incr f in
-                                         let sigma4 = loop3 e incr s f sigma3' in
-                                         (match sigma4 with
-                                         | Env.FunctionFrame _ ->  sigma4
-                                         | Env.ReturnFrame _ -> sigma4))
-             | _ -> let sigma2 = exec_stm s sigma' f in
-                   (match sigma2 with
-                      | Env.ReturnFrame _ -> sigma2
-                      | Env.FunctionFrame _ -> loop3 e incr s f sigma2))
-           | _ -> raise (TypeError "Non-boolean value in while condition")
-     (*HELPER: For for loops. Used for when given statement in for loop is an expression assignment. Folllows similar structure to while loops.*)
-     and loop2 (e : E.t) (incr : E.t) (s : S.t) (f : Fun.t) (sigma : Env.t): Env.t =
-     let (v, sigma') = eval sigma e f in
-           match v with
-           | Value.V_Bool false -> sigma'
-           | Value.V_Bool true ->
-            ( match s with
-             | S.Block s' -> let sigma2 = Env.addBlock sigma' in
-             let sigma3 = stm_list s' sigma2 f in
-             (match sigma3 with
-              | Env.ReturnFrame _ -> sigma3
-              | Env.FunctionFrame _ -> let (_,sigma3') = eval sigma3 incr f in
-                                         let sigma4 = loop2 e incr s f sigma3' in
-                                         (match sigma4 with
-                                         | Env.FunctionFrame _ ->  Env.removeBlock sigma4
-                                         | Env.ReturnFrame _ -> sigma4))
-             | _ -> let sigma2 = exec_stm s sigma' f in
-                   (match sigma2 with
-                      | Env.ReturnFrame _ -> sigma2
-                      | Env.FunctionFrame _ -> loop2 e incr s f sigma2))
-           | _ -> raise (TypeError "Non-boolean value in while condition")
  
      (*HELPER: Given list of statements, evalates each statement under environment given and updated.*)
      and stm_list (ss : S.t list) (sigma : Env.t) (f : Fun.t) : Env.t =
