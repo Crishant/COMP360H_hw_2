@@ -476,6 +476,8 @@ module Primval = struct
                      let v = Api.do_call func vl in
                      (v, sigma')
                  with
+                     | SecurityError -> raise @@ SecurityError
+                     | TypeError s -> raise @@ TypeError s
                      | _ -> raise @@ UndefinedFunction func)
        | Some (xl, sl) ->
        let xvl = zip xl vl in
