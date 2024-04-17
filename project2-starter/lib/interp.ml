@@ -532,7 +532,7 @@ module Primval = struct
          let (Value.Val (v1,l1), _) = eval sigma e f l in
          Env.newReturnFrame Value.Val (v1,l1)
        (* Return case with no value. Creates new return frame with None. *)
-       | S.Return None -> Env.newReturnFrame Value.V_None
+       | S.Return None -> Env.newReturnFrame (Value.V_None,l)
        (*FOR MATCH: Given a declaration, expression, expression and body, declares or assigns value to identifier, checks to see if identifier holds a certain condition,
           then increments identifier. If first expression is true, then the body is executed.*)
        (* | S.For (dec, e1, e2, sl) ->
