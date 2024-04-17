@@ -496,18 +496,18 @@ module Primval = struct
        (* Skip statement. Case where there is no "else" within an if statement. *)
        | S.Skip -> sigma
        (* Variable declaration. Accounts for multiple declarations within a line (therefore taking a list). Evaluates expression and assigns values to its variables (recursively within list). *)
-       | S.VarDec l ->
-         (match l with
+       | S.VarDec llist ->
+         (match llist with
           | [] -> sigma
           | (var, e) :: xs ->
            match e with
            | Some e' ->
-             let (v, sigma') = eval sigma e' f in
+             let (v, sigma') = eval sigma e' f l in
              let sigma2 = Env.newVarDec sigma' var v in
-             exec_stm (S.VarDec xs) sigma2 f
-           | None -> let sigma' = Env.newVarDec sigma var Value.V_Undefined in
-             exec_stm (S.VarDec xs) sigma' f)
-       (* DONE: Evaluates expression within statement. *)
+             exec_stm (S.VarDec xs) sigma2 f l
+           | None -> let sigma' = Env.newVarDec sigma var (Value.Val(Primval.V_None, l)) in
+             exec_stm (S.VarDec xs) sigma' f l)
+       (* Evaluates expression within statement. *)
        | S.Expr e ->
          let (_, sigma') = eval sigma e f l in
          sigma'
@@ -520,19 +520,19 @@ module Primval = struct
                              | Env.ReturnFrame _ -> sigma2)
        (* Executes if statements. Evaluates boolean expression e (accounting for type errors), and recursively executes statement based on its result. *)
        | S.If (e, s0, s1) ->
-         let (v, sigma') = eval sigma e f in
-         (match v with
-          | Value.V_Bool true -> exec_stm s0 sigma' f
-          | Value.V_Bool false -> exec_stm s1 sigma' f
+         let (Value.Val (v1,l1), sigma') = eval sigma e f l in
+         (match v1 with
+          | Primval.V_Bool true -> exec_stm s0 sigma' f l1
+          | Primval.V_Bool false -> exec_stm s1 sigma' f l1
           | _ -> raise (TypeError "Non-boolean value in if condition"))
        (*WHILE MATCH: Given an expression and a body, evaluates expression and continues to evaluate body until expression returns false*)
        | S.While (e, s) -> loop e s sigma f
        (* Return case with value from expression e. Calls helper function to create a return frame with value v. *)
        | S.Return Some e ->
-         let (v, _) = eval sigma e f in
-         Env.newReturnFrame v
+         let (Value.Val (v1,l1), _) = eval sigma e f l in
+         Env.newReturnFrame Value.Val (v1,l1)
        (* Return case with no value. Creates new return frame with None. *)
-       | S.Return None -> Env.newReturnFrame Value.V_None
+       | S.Return None -> Env.newReturnFrame (Value.V_None,l)
        (*FOR MATCH: Given a declaration, expression, expression and body, declares or assigns value to identifier, checks to see if identifier holds a certain condition,
           then increments identifier. If first expression is true, then the body is executed.*)
        (* | S.For (dec, e1, e2, sl) ->
