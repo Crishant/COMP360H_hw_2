@@ -584,7 +584,7 @@ module Primval = struct
          | None -> ()
          | Some (_, stmt_list) ->
              let env = Env.newFuncFrame in
-             let _ = exec_stm (S.Block stmt_list) env f in
+             let _ = exec_stm (S.Block stmt_list) env f SecurityLabel.Low in
                  ()
  
  
