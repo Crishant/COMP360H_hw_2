@@ -529,10 +529,10 @@ module Primval = struct
        | S.While (e, s) -> loop e s sigma f
        (* Return case with value from expression e. Calls helper function to create a return frame with value v. *)
        | S.Return Some e ->
-         let v, _ = eval sigma e f l in
+         let (v, _) = eval sigma e f l in
          Env.newReturnFrame v
        (* Return case with no value. Creates new return frame with None. *)
-       | S.Return None -> Env.newReturnFrame (Value.V_None,l)
+       | S.Return None -> Env.newReturnFrame (Value.Val (Primval.V_None,l))
      (*HELPER: For while loops. Evaluates given expression under the environment frame. If false then returns updated frame. If true then adds a new environment frame onto frame stack.
         Then checks evaluates the block. If a return frame is given, we return said return frame. Else, we evaluate the loop again. After finished, we remove top
         environment frame or return return frame.*)
