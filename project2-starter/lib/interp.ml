@@ -452,22 +452,22 @@ module Primval = struct
         |(SecurityLabel.High, SecurityLabel.Low) -> failwith "Assign Error"
         |_ -> let sigma2 = Env.update sigma' x (Value.Val (v1, SecurityLabel.compare l l1)) in
         (Value.Val (v1, SecurityLabel.compare l l1), sigma2)) 
-     (* Not operator (switches Boolean expressions).  *)
+     (* DONE: Not operator (switches Boolean expressions).  *)
      | E.Not e ->
-       let (v, sigma') = eval sigma e f in
-       (match v with
-        | Primval.V_Bool b -> (Value.Val(Primval.V_Bool (not b), l) , sigma')
+       let (Value.Val (v1,l1), sigma') = eval sigma e f l in
+       (match v1 with
+        | Primval.V_Bool b -> (Value.Val(Primval.V_Bool (not b), l1) , sigma')
         | _ -> failwith "Type Error")
-     (* Negative of expression e. First evaluates e and then returns its negative. *)
+     (* DONE: Negative of expression e. First evaluates e and then returns its negative. *)
      | E.Neg e ->
-       let (v, sigma') = eval sigma e f in
-       (match v with
-        | Primval.V_Int n -> (Value.Val(Primval.V_Int (-n), l) , sigma')
+       let (Value.Val (v1, l1), sigma') = eval sigma e f l in
+       (match v1 with
+        | Primval.V_Int n -> (Value.Val(Primval.V_Int (-n), l1) , sigma')
         | _ -> failwith "Type Error")
      (*DONE: CALL MATCH: Given a list of expressions, evaluates all expressions. Then matches given function identifier and returns list of params and the body.
         Zips param identifiers with values from expression list, and executes body in a new frame*)
      | E.Call (func, llist) ->
-       let (vl, sigma') = eval_all llist sigma f in
+       let (vl, sigma') = eval_all llist sigma f l in
        (match Fun.findFunc f func with
        | None -> (try
                      let v = Api.do_call func vl in
