@@ -445,11 +445,13 @@ module Primval = struct
        let newval = binop op v1 v2 in
        let lnew = SecurityLabel.compare l1 l2 in
        (Value.Val (newval, lnew), sigma2)
-     (* Assign value in expression e to x. *)
+     (* DONE: Assign value in expression e to x. *)
      | E.Assign (x, e) ->
-       let (v, sigma') = eval sigma e f in
-       let sigma2 = Env.update sigma' x v in
-       (v, sigma2)
+       let (Value.Val (v1,l1), sigma') = eval sigma e f l in
+        (match (l,l1) with 
+        |(SecurityLabel.High, SecurityLabel.Low) -> failwith "Assign Error"
+        |_ -> let sigma2 = Env.update sigma' x (Value.Val (v1, SecurityLabel.compare l l1)) in
+        (Value.Val (v1, SecurityLabel.compare l l1), sigma2)) 
      (* Not operator (switches Boolean expressions).  *)
      | E.Not e ->
        let (v, sigma') = eval sigma e f in
@@ -462,10 +464,10 @@ module Primval = struct
        (match v with
         | Value.V_Int n -> (Value.V_Int (-n), sigma')
         | _ -> failwith "Type Error")
-     (*CALL MATCH: Given a list of expressions, evaluates all expressions. Then matches given function identifier and returns list of params and the body.
+     (*DONE: CALL MATCH: Given a list of expressions, evaluates all expressions. Then matches given function identifier and returns list of params and the body.
         Zips param identifiers with values from expression list, and executes body in a new frame*)
-     | E.Call (func, l) ->
-       let (vl, sigma') = eval_all l sigma f in
+     | E.Call (func, llist) ->
+       let (vl, sigma') = eval_all llist sigma f in
        (match Fun.findFunc f func with
        | None -> (try
                      let v = Api.do_call func vl in
@@ -475,7 +477,7 @@ module Primval = struct
        | Some (xl, sl) ->
        let xvl = zip xl vl in
        let sigma2 = Fun.initFun xvl in
-       (match exec_stm (S.Block sl) sigma2 f with
+       (match exec_stm (S.Block sl) sigma2 f l with
         | ReturnFrame v -> (v, sigma')
         | _ -> failwith "Not a return frame"))
  
@@ -489,7 +491,7 @@ module Primval = struct
      (v::vs, sigma2)
  
      (* FUNCTION exec_stm (recursive): Executes statements. Takes in statement stm, environment sigma, and function t and returns the updated environment. *)
-     and exec_stm (stm : S.t) (sigma : Env.t) (f : Fun.t) : Env.t =
+     and exec_stm (stm : S.t) (sigma : Env.t) (f : Fun.t) (l : SecurityLabel.t) : Env.t =
        match stm with
        (* Skip statement. Case where there is no "else" within an if statement. *)
        | S.Skip -> sigma
