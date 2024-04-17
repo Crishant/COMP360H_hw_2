@@ -529,8 +529,8 @@ module Primval = struct
        | S.While (e, s) -> loop e s sigma f
        (* Return case with value from expression e. Calls helper function to create a return frame with value v. *)
        | S.Return Some e ->
-         let (v, _) = eval sigma e f in
-         Env.newReturnFrame v
+         let (Value.Val (v1,l1), _) = eval sigma e f l in
+         Env.newReturnFrame Value.Val (v1,l1)
        (* Return case with no value. Creates new return frame with None. *)
        | S.Return None -> Env.newReturnFrame Value.V_None
        (*FOR MATCH: Given a declaration, expression, expression and body, declares or assigns value to identifier, checks to see if identifier holds a certain condition,
