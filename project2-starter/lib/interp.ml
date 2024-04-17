@@ -520,10 +520,10 @@ module Primval = struct
                              | Env.ReturnFrame _ -> sigma2)
        (* Executes if statements. Evaluates boolean expression e (accounting for type errors), and recursively executes statement based on its result. *)
        | S.If (e, s0, s1) ->
-         let (v, sigma') = eval sigma e f in
-         (match v with
-          | Value.V_Bool true -> exec_stm s0 sigma' f
-          | Value.V_Bool false -> exec_stm s1 sigma' f
+         let (Value.Val (v1,l1), sigma') = eval sigma e f l in
+         (match v1 with
+          | Primval.V_Bool true -> exec_stm s0 sigma' f l1
+          | Primval.V_Bool false -> exec_stm s1 sigma' f l1
           | _ -> raise (TypeError "Non-boolean value in if condition"))
        (*WHILE MATCH: Given an expression and a body, evaluates expression and continues to evaluate body until expression returns false*)
        | S.While (e, s) -> loop e s sigma f
