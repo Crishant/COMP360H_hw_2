@@ -112,14 +112,13 @@ let extest test_code input expected =
       (Some expected) actual
 
 
-(* make_test_from_json_spec fd sp = (name, tf), where tf is a a test defined
- * by sp as described above and name is the name of the file used for the
- * test.  `fd` is the directory in which to find program files.
+(* make_test_from_json_spec fd sp = tf, where tf is a a test defined by sp as
+ * described above.  `fd` is the directory in which to find program files.
  *
  * Note that what I call a "test" has type `OUnit2.test_fun`.
  *)
 let make_test_from_json_spec 
-    (files_dir : string) (spec : YJ.t) : string*test_fun =
+    (files_dir : string) (spec : YJ.t) : test_fun =
   (* Get the code to be tested.
    *)
   let test_file = 
@@ -127,7 +126,17 @@ let make_test_from_json_spec
   let test_code = In_channel.with_open_text test_file (
     fun ic ->
       let lexbuf = Lexing.from_channel ic in
-      Imp.Parser.terminated_pgm Imp.Lexer.read_token lexbuf
+      try
+        Imp.Parser.terminated_pgm Imp.Lexer.read_token lexbuf
+      with
+      | Imp.Parser.Error ->
+        let pos = Lexing.lexeme_start_p lexbuf in
+        failwith @@ Printf.sprintf
+          ("Parser error in %s near line %d, character %d.\n")
+          test_file
+          pos.pos_lnum
+          (pos.pos_cnum - pos.pos_bol)
+
   ) in
 
   (* Set the API input channel to read from the input in the test
@@ -146,11 +155,11 @@ let make_test_from_json_spec
     let expected : string list =
       spec |> YJU.member "output" |> YJU.to_list |> YJU.filter_string in
 
-    (test_file, iotest test_code input expected)
+    iotest test_code input expected
   else
     let ex : string =
       spec |> YJU.member "except" |> YJU.to_string in
-    (test_file, extest test_code input ex)
+    extest test_code input ex
 
 
 (* make_suite_from_specs sd fd f = ts, where ts is a test suite with name
@@ -164,12 +173,8 @@ let make_suite_from_specs
   let specs = Filename.concat specs_dir f |> YJ.seq_from_file |> List.of_seq in
 
   f >::: 
-    List.map 
-      (
-        fun s ->
-          let (f, t) = make_test_from_json_spec files_dir s in
-          f >:: t
-      )
+    List.mapi 
+      (fun i s -> Int.to_string i >:: make_test_from_json_spec files_dir s) 
       specs
 
 (*  is_dir f = true,  f is the name of a directory

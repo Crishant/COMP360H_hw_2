@@ -29,19 +29,19 @@
 }
 
 {
-  "file":     "nishtest-03.imp",
+  "file":     "nish-test-03.imp",
   "input":    ["false"],
   "except":   "SecurityError"
 }
 
 {
-  "file":     "nishtest-04.imp",
+  "file":     "nish-test-04.imp",
   "input":    ["2", "2"],
   "except":   "SecurityError"
 }
 
 {
-  "file":     "nishtest-05.imp",
+  "file":     "nish-test-05.imp",
   "input":    ["2"],
   "output":  ["5"]
 }

@@ -1,10 +1,10 @@
-function main {
+function main () {
 
     var a = get_int_s ();
     var b = 5;
 
-    if (a == 5) {
-        if (true) {
+    if (a == 5) then {
+        if (true) then {
             print_int (b);
         }
     }

@@ -10,7 +10,7 @@ function main () {
 
 }
 
-function helper_1 (var a, var b) {
+function helper_1 (a, b) {
 
     var c = a +1 ;
     var d = b - 1 ;
@@ -18,9 +18,9 @@ function helper_1 (var a, var b) {
     return helper_2 (c,d);
 }
 
-function helper_2 (var a, var b) {
+function helper_2 (a, b) {
 
-    if (a < b) {
+    if (a < b) then {
         return 1;
     }
 

@@ -1,16 +1,14 @@
-function main {
+function main () {
 
     var a = true;
     var b = false;
 
     var c = get_bool_s();
 
-    if (c){
+    if c then
         print_bool (a);
-    }
-    else {
-        print_bool (b)
-    }
+    else
+        print_bool (b);
 
     return;
 

@@ -1,11 +1,11 @@
-function main {
+function main () {
 
     var a = get_int_s ();
     var b= 0;
 
-    vat c = a;
+    var c = a;
 
-    while (c > 0) {
+    while (c > 0) do {
         b = b + 1;
         a = a - 1;
     }

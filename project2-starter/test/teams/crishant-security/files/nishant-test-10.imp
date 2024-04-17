@@ -1,4 +1,4 @@
-function main {
+function main (){
 
     var a = 6;
     var b = get_int_s ();

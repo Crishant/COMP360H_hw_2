@@ -5,7 +5,7 @@ function main() {
 
     var z = x + y;
 
-    if (x == y) {
+    if (x == y) then {
         print_int(z);
     }
 
