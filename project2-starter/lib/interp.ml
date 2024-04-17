@@ -529,21 +529,10 @@ module Primval = struct
        | S.While (e, s) -> loop e s sigma f
        (* Return case with value from expression e. Calls helper function to create a return frame with value v. *)
        | S.Return Some e ->
-         let (Value.Val (v1,l1), _) = eval sigma e f l in
-         Env.newReturnFrame Value.Val (v1,l1)
+         let (v, _) = eval sigma e f l in
+         Env.newReturnFrame v
        (* Return case with no value. Creates new return frame with None. *)
-       | S.Return None -> Env.newReturnFrame (Value.V_None,l)
-       (*FOR MATCH: Given a declaration, expression, expression and body, declares or assigns value to identifier, checks to see if identifier holds a certain condition,
-          then increments identifier. If first expression is true, then the body is executed.*)
-       (* | S.For (dec, e1, e2, sl) ->
-         (match dec with
-          | S.VarDec l -> let sigma' = Env.addBlock sigma in 
-                         exec_stm (S.VarDec l) sigma' f |> loop3 e1 e2 sl f |> Env.removeBlock
-          | S.Expr exp ->
-            (match exp with
-             | E.Assign (_, _) -> let (_, sigma') = eval sigma exp f in loop2 e1 e2 sl f sigma'
-             | _ -> failwith "Invalid expression in for loop") *)
-          (* | _ -> failwith "Invalid for loop declaration") *)
+       | S.Return None -> Env.newReturnFrame (Value.Val (Primval.V_None,l))
      (*HELPER: For while loops. Evaluates given expression under the environment frame. If false then returns updated frame. If true then adds a new environment frame onto frame stack.
         Then checks evaluates the block. If a return frame is given, we return said return frame. Else, we evaluate the loop again. After finished, we remove top
         environment frame or return return frame.*)
