@@ -16,7 +16,7 @@ function main(){
     }
 
     if y == 15 then {
-        print("this should print")
+        print("this should print");
     }
     return; 
 }
