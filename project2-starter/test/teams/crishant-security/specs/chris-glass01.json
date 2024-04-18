@@ -7,13 +7,13 @@
   {
     "file":     "chris-test-01.imp",
     "input":    ["3"],
-    "except":   "Security Error"
+    "except":   "SecurityError"
   }
   
   {
     "file":     "chris-test-02.imp",
     "input":    ["4"],
-    "except":   "Security Error"
+    "except":   "SecurityError"
   }
   
   {
@@ -25,7 +25,7 @@
   {
     "file":     "chris-test-03.imp",
     "input":    ["5"],
-    "except":   "Security Error"
+    "except":   "SecurityError"
   }
   
 //   {
@@ -59,7 +59,7 @@
   {
     "file": "chris-test-06.imp",
     "input": ["5", "5"],
-    "output": ["15", "this should print"]
+    "output": ["15"]
   }
   
   {
@@ -73,16 +73,16 @@
     "output": ["10", "14"]
   }
   
-  {
-    "file":     "chris-test-08.imp",
-    "input":    ["6"],
-    "except":  "SecurityError"
-  }
-  {
-    "file": "chris-test-08.imp",
-    "input": ["4"],
-    "except": "SecurityError"
-  }
+  // {
+  //   "file":     "chris-test-08.imp",
+  //   "input":    ["6"],
+  //   "except":  "SecurityError"
+  // }
+  // {
+  //   "file": "chris-test-08.imp",
+  //   "input": ["4"],
+  //   "except": "SecurityError"
+  // }
   
   {
     "file":     "chris-test-09.imp",

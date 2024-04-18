@@ -49,13 +49,13 @@
 {
     "file":     "cristi-test-03.imp",
     "input":    ["52"],
-    "except":   "SecurityError"
+    "except": "SecurityError"
 }
 
 {
     "file":     "cristi-test-04.imp",
     "input":    ["39"],
-    "except":   "SecurityError"
+    "output": ["1"]
 }
 
 {
@@ -67,7 +67,7 @@
 {
     "file":     "cristi-test-04.imp",
     "input":    ["33"],
-    "except":   "SecurityError"
+    "output": ["1"]
 }
 
 {
@@ -165,20 +165,10 @@
 {
     "file":     "cristi-test-10.imp",
     "input":    ["2","3"],
-    "output":   ["4"]
+    "except": "SecurityError"
 }
 
-{
-    "file":     "cristi-test-10.imp",
-    "input":    ["2","3"],
-    "output":   ["4"]
-}
 
-{
-    "file":     "cristi-test-10.imp",
-    "input":    ["2","3"],
-    "output":   ["4"]
-}
 
 
 

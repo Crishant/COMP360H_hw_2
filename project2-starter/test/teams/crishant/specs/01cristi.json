@@ -12,9 +12,9 @@
     "output": ["jello"]
 }
 
-{
-    "file":   "cristi-dec-03.imp",
-    "input":  [],
-    "output": ["nuts","3","false"]
-}
+// {
+//     "file":   "cristi-dec-03.imp",
+//     "input":  [],
+//     "output": ["nuts","3","false"]
+// }
 

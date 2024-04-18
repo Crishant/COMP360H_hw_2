@@ -6,17 +6,13 @@ function main(){
     var z = get_int_s();
 
     while (z != x) do {
-        print(y);
+        print_int(y);
         z = x;
     }
 
     while (y > 14) do {
-        print(y);
+        print_int(y);
         y = y - 1;
-    }
-
-    if y == 15 then {
-        print("this should print");
     }
     return; 
 }

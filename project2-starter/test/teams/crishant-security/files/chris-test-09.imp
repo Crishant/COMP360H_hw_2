@@ -1,9 +1,9 @@
 function main() {
-    var x = get_int_s;
+    var x = get_int_s();
     var y = 5;
 
-    if y == 5 then {
+    if (y == 5) then {
         var x = 3;
-        print(x);
+        print_int(x);
     }
 }

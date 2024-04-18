@@ -43,7 +43,7 @@
 {
   "file":     "nish-test-05.imp",
   "input":    ["2"],
-  "output":  ["5"]
+  "except": "MultipleDeclaration"
 }
 
 // {
@@ -63,7 +63,7 @@
   "input":    ["5"],
   "except":  "SecurityError"
 }
-
+//This is the test that does not run. 
 {
   "file":     "nishant-test-09.imp",
   "input":    ["5", "2"],

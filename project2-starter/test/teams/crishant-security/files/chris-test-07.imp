@@ -4,12 +4,12 @@ function main(){
 
     if y == 9 then {
         if x == 3 then {
-            print(y);
+            print_int(y);
         }
         y = y + 1;
-        print(y);
+        print_int(y);
     }
     y = y + 4;
-    print(y);
+    print_int(y);
     return;
 }

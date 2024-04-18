@@ -3,7 +3,7 @@ function main(){
     var y = 4;
 
     if x == 4 then {
-        print(y);
+        print_int(y);
     }
 
     return; 

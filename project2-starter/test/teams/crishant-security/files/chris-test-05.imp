@@ -7,7 +7,7 @@ function main(){
         y = y + 7;
     }
 
-    print(y);
+    print_int(y);
 
     return;
 }

@@ -3,11 +3,10 @@ function main(){
     var y = true;
 
     if y then {
-        print(x);
+        print_int(x);
         print_int(4);
     }
 
-    print("worked");
 
     return;
 }

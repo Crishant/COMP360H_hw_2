@@ -12,7 +12,7 @@ function main () {
 
 function helper_1 (a, b) {
 
-    var c = a +1 ;
+    var c = a + 1 ;
     var d = b - 1 ;
 
     return helper_2 (c,d);
