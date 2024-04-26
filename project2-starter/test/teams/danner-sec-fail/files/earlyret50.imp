@@ -1,3 +1,11 @@
+/* Path Not Taken Issue. If user input is true, we don't have any output
+ * because of the return statement in the "if" statement. However, if we
+ * that user input is false, the body of if statment never executes, which
+ * leads to us printing "false". Thus, depending on the output, we can infer
+ * input, thus meaning we leak information.
+ *
+ */
+
 function f(y) {
     if y then return ;
 

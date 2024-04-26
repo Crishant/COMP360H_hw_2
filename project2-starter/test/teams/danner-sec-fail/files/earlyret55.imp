@@ -1,3 +1,12 @@
+/* This program (given our security semantics) would throw an SecurityError
+ * if user input is true, but print false if user input is false. Because of this
+ * one-to-one behaviour, the malicious coder could infer what the user entered. On
+ * the other hand, notice that if we run the program without considering security, the
+ * output is the same in both cases; the program prints "true", thus leaking no
+ * information about the user input. 
+ * 
+ */
+
 function f(y) {
     if y then {
         print_bool(true) ;
