@@ -73,19 +73,19 @@
 {
     "file":     "cristi-test-05.imp",
     "input":    ["1"],
-    "output":   ["52"]
+    "except":   "SecurityError"
 }
 
 {
     "file":     "cristi-test-05.imp",
     "input":    ["2"],
-    "output":   ["52"]
+    "except":   "SecurityError"
 }
 
 {
     "file":     "cristi-test-05.imp",
     "input":    ["3"],
-    "output":   ["52"]
+    "except":   "SecurityError"
 }
 
 {
