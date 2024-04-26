@@ -305,21 +305,25 @@ module Primval = struct
                       | false -> varBounded ys x
          
        (*HELPER: finds identifier in Environment and binds value to identifier*)
-       let rec update' (tables : bindingTable list) (x : Ast.Id.t) (v : Value.t): bindingTable list =
+       let rec update' (tables : bindingTable list) (x : Ast.Id.t) (v : Value.t) (l : SecurityLabel.t): bindingTable list =
          match tables with
          | [] -> raise (UnboundVariable x)
          | currMap :: rest ->
              if IdMap.mem x currMap then
-                 (IdMap.add x v currMap) :: rest
+                (match (IdMap.find x currMap) with
+                | Value.Val (_, l1) -> (match (l, l1) with
+                  | (SecurityLabel.High, SecurityLabel.Low) -> raise SecurityError
+                  | _ -> (IdMap.add x v currMap) :: rest)
+               )
              else
-                 let updatedRest = update' rest x v in
+                 let updatedRest = update' rest x v l in
                      currMap :: updatedRest
  
        (*FUNCTION: given an identifier and value, binds identifier to value*)
-       let update (currFrame : t) (x : Ast.Id.t) (v : Value.t) : t =
+       let update (currFrame : t) (x : Ast.Id.t) (v : Value.t) (l : SecurityLabel.t) : t =
          match currFrame with
              | ReturnFrame _ -> failwith "Update in a return Frame"
-             | FunctionFrame currFrame -> FunctionFrame (update' currFrame x v)
+             | FunctionFrame currFrame -> FunctionFrame (update' currFrame x v l)
  
  
  
@@ -451,11 +455,9 @@ module Primval = struct
      (* DONE: Assign value in expression e to x. *)
      | E.Assign (x, e) ->
        let (Value.Val (v1,l1), sigma') = eval sigma e f l in
-        (match (l,l1) with 
-        |(SecurityLabel.High, SecurityLabel.Low) -> failwith "Assign Error"
-        |_ -> let sigma2 = Env.update sigma' x (Value.Val (v1, SecurityLabel.compare l l1)) in
-        (Value.Val (v1, SecurityLabel.compare l l1), sigma2)) 
-     (* DONE: Not operator (switches Boolean expressions).  *)
+        let sigma2 = Env.update sigma' x (Value.Val (v1, SecurityLabel.compare l l1)) l in
+        (Value.Val (v1, SecurityLabel.compare l l1), sigma2)
+        (* DONE: Not operator (switches Boolean expressions).  *)
      | E.Not e ->
        let (Value.Val (v1,l1), sigma') = eval sigma e f l in
        (match v1 with
