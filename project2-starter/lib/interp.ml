@@ -135,112 +135,115 @@ module Primval = struct
      [
        ("print_bool", fun vs ->
          match vs with
-         | [Value.V_Bool n] -> 
-           outputnl (!out_channel) (Bool.to_string n) ; Value.V_None
-         | _ -> raise @@ TypeError "Bad argument type for print_bool"
+         | [Value.Val (Primval.V_Bool b, SecurityLabel.Low)] -> 
+          outputnl (!out_channel) (Bool.to_string b) ; Value.Val (Primval.V_None, SecurityLabel.Low)
+        | [Value.Val (Primval.V_Bool _, SecurityLabel.High)] -> 
+         raise @@ SecurityError
+        | _ -> raise @@ TypeError "Bad argument type for print_bool"
        )
      ; ("get_bool", fun vs ->
          match vs with
-         | [] -> Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
+         | [] -> Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)) , SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for get_bool"
        )
      ; ("prompt_bool", fun vs ->
          match vs with
-         | [Value.V_Str s] ->
+         | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] ->
            if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
+             Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for prompt_bool"
        )
      ; ("print_int", fun vs ->
          match vs with
-         | [Value.V_Int n] -> 
-           outputnl (!out_channel) (Int.to_string n) ; Value.V_None
+         | [Value.Val (Primval.V_Int n, SecurityLabel.Low)] -> 
+           outputnl (!out_channel) (Int.to_string n) ; Value.Val (Primval.V_None, SecurityLabel.Low)
+         | [Value.Val (Primval.V_Int _, SecurityLabel.High)] -> 
+            raise @@ SecurityError
          | _ -> raise @@ TypeError "Bad argument type for print_int"
        )
      ; ("get_int", fun vs ->
          match vs with
-         | [] -> Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
+         | [] -> Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for get_int"
        )
      ; ("prompt_int", fun vs ->
          match vs with
-         | [Value.V_Str s] ->
+         | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] ->
            if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
+             Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for prompt_int"
        )
      ; ("print_str", fun vs ->
           match vs with
-          | [Value.V_Str s] -> 
-            outputnl (!out_channel) s ; Value.V_None
+          | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] -> 
+            outputnl (!out_channel) s ; Value.Val (Primval.V_None, SecurityLabel.Low)
           | _ -> raise @@ TypeError "Bad argument type for print_s"
        )
      ; ("get_str", fun vs ->
          match vs with
-         | [] -> Value.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s))
+         | [] -> Value.Val (Primval.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for get_str"
        )
      ; ("prompt_str", fun vs ->
          match vs with
-         | [Value.V_Str s] ->
+         | [Value.Val (Primval.V_Str s, SecurityLabel.Low)] ->
            if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s))
+             Value.Val (Primval.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s)), SecurityLabel.Low)
          | _ -> raise @@ TypeError "Bad argument type for prompt_str"
        )
      ; ("print_bool_s", fun vs ->
-         match vs with
-         | [Value.V_Bool n] -> 
-           outputnl (!out_channel) (Bool.to_string n) ; Value.V_None
-         | _ -> raise @@ TypeError "Bad argument type for print_bool_s"
+      match vs with
+      | [Value.Val (Primval.V_Bool b, _)] -> 
+       outputnl (!out_channel) (Bool.to_string b) ; Value.Val (Primval.V_None, SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for print_bool_s"
        )
      ; ("get_bool_s", fun vs ->
-         match vs with
-         | [] -> Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
-         | _ -> raise @@ TypeError "Bad argument type for get_bool_s"
-       )
+      match vs with
+      | [] -> Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)) , SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for get_bool_s"       
+      )
      ; ("prompt_bool_s", fun vs ->
-         match vs with
-         | [Value.V_Str s] ->
-           if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b))
-         | _ -> raise @@ TypeError "Bad argument type for prompt_bool_s"
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] ->
+        if !show_prompts then output (!out_channel) s else () ;
+          Value.Val (Primval.V_Bool (Scanf.bscanf !in_channel " %B" (fun b -> b)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for prompt_bool_s"
        )
      ; ("print_int_s", fun vs ->
-         match vs with
-         | [Value.V_Int n] -> 
-           outputnl (!out_channel) (Int.to_string n) ; Value.V_None
-         | _ -> raise @@ TypeError "Bad argument type for print_int_s"
+      match vs with
+      | [Value.Val (Primval.V_Int n, _)] -> 
+        outputnl (!out_channel) (Int.to_string n) ; Value.Val (Primval.V_None, SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for print_int_s"
        )
      ; ("get_int_s", fun vs ->
-         match vs with
-         | [] -> Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
-         | _ -> raise @@ TypeError "Bad argument type for get_int_s"
+      match vs with
+      | [] -> Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for get_int_s"
        )
      ; ("prompt_int_s", fun vs ->
-         match vs with
-         | [Value.V_Str s] ->
-           if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n))
-         | _ -> raise @@ TypeError "Bad argument type for prompt_int_s"
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] ->
+        if !show_prompts then output (!out_channel) s else () ;
+          Value.Val (Primval.V_Int (Scanf.bscanf !in_channel " %d" (fun n -> n)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for prompt_int_s"
        )
      ; ("print_str_s", fun vs ->
-          match vs with
-          | [Value.V_Str s] -> 
-            outputnl (!out_channel) s ; Value.V_None
-          | _ -> raise @@ TypeError "Bad argument type for print_str_s"
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] -> 
+        outputnl (!out_channel) s ; Value.Val (Primval.V_None, SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for print_str_s"
        )
      ; ("get_str_s", fun vs ->
-         match vs with
-         | [] -> Value.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s))
-         | _ -> raise @@ TypeError "Bad argument type for get_str_s"
+      match vs with
+      | [] -> Value.Val (Primval.V_Str (Scanf.bscanf !in_channel "%s" (fun s -> s)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for get_str_s"
        )
      ; ("prompt_str_s", fun vs ->
-         match vs with
-         | [Value.V_Str s] ->
-           if !show_prompts then output (!out_channel) s else () ;
-             Value.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s))
-         | _ -> raise @@ TypeError "Bad argument type for prompt_str_s"
-       )
+      match vs with
+      | [Value.Val (Primval.V_Str s, _)] ->
+        if !show_prompts then output (!out_channel) s else () ;
+          Value.Val (Primval.V_Str (Scanf.bscanf !in_channel " %s" (fun s -> s)), SecurityLabel.High)
+      | _ -> raise @@ TypeError "Bad argument type for prompt_str_s"       )
      ] |> List.to_seq |> IdentMap.of_seq
  
    (* do_call f vs invokes the API function corresponding to `f` with argument
@@ -398,24 +401,24 @@ module Primval = struct
  end
  
  (* FUNCTION binop: Matches values to the correct BINOP expression. Takes in BINOP operand and two values to compute operand on and returns its value t. *)
- let binop (op : E.binop) (v : Value.t) (v' : Value.t) : Value.t =
+ let binop (op : E.binop) (v : Primval.t) (v' : Primval.t) : Primval.t =
    match (op, v, v') with
-   | (E.Plus, Value.V_Int n, Value.V_Int n') -> Value.V_Int (n + n')
-   | (E.Minus, Value.V_Int n, Value.V_Int n') -> Value.V_Int(n - n')
-   | (E.Div, Value.V_Int n, Value.V_Int n') -> Value.V_Int(n / n')
-   | (E.Times, Value.V_Int n, Value.V_Int n') -> Value.V_Int (n * n')
-   | (E.And, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool (n && n')
-   | (E.Mod, Value.V_Int n, Value.V_Int n') -> Value.V_Int (n mod n')
-   | (E.Or, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool(n || n')
-   | (E.Eq, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool (n = n')
-   | (E.Eq, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n = n')
-   | (E.Le, Value.V_Int n, Value.V_Int n') -> Value.V_Bool (n <= n')
-   | (E.Ge, Value.V_Int n, Value.V_Int n') -> Value.V_Bool (n >= n')
-   | (E.Ne, Value.V_Bool n, Value.V_Bool n') -> Value.V_Bool (n <> n')
-   | (E.Ne, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n <> n')
-   | (E.Lt, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n < n')
-   | (E.Gt, Value.V_Int n, Value.V_Int n') -> Value.V_Bool(n > n')
-   | _ -> raise (TypeError ("Arg 1: " ^ Value.to_string v ^ "Arg 2:" ^ Value.to_string v' ^ "Operator: Unknown"))
+   | (E.Plus, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int (n + n')
+   | (E.Minus, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int(n - n')
+   | (E.Div, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int(n / n')
+   | (E.Times, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int (n * n')
+   | (E.And, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool (n && n')
+   | (E.Mod, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Int (n mod n')
+   | (E.Or, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool(n || n')
+   | (E.Eq, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool (n = n')
+   | (E.Eq, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n = n')
+   | (E.Le, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool (n <= n')
+   | (E.Ge, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool (n >= n')
+   | (E.Ne, Primval.V_Bool n, Primval.V_Bool n') -> Primval.V_Bool (n <> n')
+   | (E.Ne, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n <> n')
+   | (E.Lt, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n < n')
+   | (E.Gt, Primval.V_Int n, Primval.V_Int n') -> Primval.V_Bool(n > n')
+   | _ -> raise (TypeError ("Arg 1: " ^ Primval.to_string v ^ "Arg 2:" ^ Primval.to_string v' ^ "Operator: Unknown"))
  
  (*HELPER: given a list of identifiers and values, returns list of tuples with identifier and value*)
  let rec zip (l1 : Ast.Id.t list) (l2 : Value.t list) : (Ast.Id.t * Value.t) list =
@@ -425,192 +428,148 @@ module Primval = struct
    | _ -> failwith @@ "No lists"
  
    (* FUNCTION eval (recursive): Evaluates Expressions. Takes in environment sigma, expression e and function t (for Call) and returns the expression's value and updated environment. *)
-   let rec eval (sigma : Env.t) (e : E.t) (f: Fun.t) : Value.t * Env.t =
+   let rec eval (sigma : Env.t) (e : E.t) (f: Fun.t) (l: SecurityLabel.t ): Value.t * Env.t =
      match e with
-     (* Variable Lookup. *)
-     | E.Var x -> (Env.lookup sigma x, sigma)
-     (* Integer expression. *)
-     | E.Num n -> (Value.V_Int n, sigma)
+     (* DONE: Variable Lookup. *)
+     | E.Var x -> 
+      let Value.Val(v, l') = Env.lookup sigma x in
+      let lnew = SecurityLabel.compare l l' in
+          (Value.Val(v, lnew ), sigma)
+     (* DONE: Integer expression.*)
+     | E.Num n -> (Value.Val (Primval.V_Int n, l), sigma)
      (* Boolean expression. *)
-     | E.Bool b -> (Value.V_Bool b, sigma)
-     (* String expression. *)
-     | E.Str s -> (Value.V_Str s, sigma)
-     (* Calls BINOP expression. Makes recursive call to evaluate each internal expression. *)
+     | E.Bool b -> (Value.Val(Primval.V_Bool b, l), sigma)
+     (* DONE: String expression. *)
+     | E.Str s -> (Value.Val(Primval.V_Str s, l) , sigma)
+     (* DONE: Calls BINOP expression. Makes recursive call to evaluate each internal expression. *)
      | E.Binop (op, e1, e2) ->
-       let (v1, sigma1) = eval sigma e1 f in
-       let (v2, sigma2) = eval sigma1 e2 f in
-       (binop op v1 v2, sigma2)
-     (* Assign value in expression e to x. *)
+       let (Value.Val (v1, l1), sigma1) = eval sigma e1 f l in
+       let (Value.Val (v2, l2), sigma2) = eval sigma1 e2 f l in
+       let newval = binop op v1 v2 in
+       let lnew = SecurityLabel.compare l1 l2 in
+       (Value.Val (newval, lnew), sigma2)
+     (* DONE: Assign value in expression e to x. *)
      | E.Assign (x, e) ->
-       let (v, sigma') = eval sigma e f in
-       let sigma2 = Env.update sigma' x v in
-       (v, sigma2)
-     (* Not operator (switches Boolean expressions).  *)
+       let (Value.Val (v1,l1), sigma') = eval sigma e f l in
+        (match (l,l1) with 
+        |(SecurityLabel.High, SecurityLabel.Low) -> failwith "Assign Error"
+        |_ -> let sigma2 = Env.update sigma' x (Value.Val (v1, SecurityLabel.compare l l1)) in
+        (Value.Val (v1, SecurityLabel.compare l l1), sigma2)) 
+     (* DONE: Not operator (switches Boolean expressions).  *)
      | E.Not e ->
-       let (v, sigma') = eval sigma e f in
-       (match v with
-        | Value.V_Bool b -> (Value.V_Bool (not b), sigma')
+       let (Value.Val (v1,l1), sigma') = eval sigma e f l in
+       (match v1 with
+        | Primval.V_Bool b -> (Value.Val(Primval.V_Bool (not b), l1) , sigma')
         | _ -> failwith "Type Error")
-     (* Negative of expression e. First evaluates e and then returns its negative. *)
+     (* DONE: Negative of expression e. First evaluates e and then returns its negative. *)
      | E.Neg e ->
-       let (v, sigma') = eval sigma e f in
-       (match v with
-        | Value.V_Int n -> (Value.V_Int (-n), sigma')
+       let (Value.Val (v1, l1), sigma') = eval sigma e f l in
+       (match v1 with
+        | Primval.V_Int n -> (Value.Val(Primval.V_Int (-n), l1) , sigma')
         | _ -> failwith "Type Error")
-     (*CALL MATCH: Given a list of expressions, evaluates all expressions. Then matches given function identifier and returns list of params and the body.
+     (*DONE: CALL MATCH: Given a list of expressions, evaluates all expressions. Then matches given function identifier and returns list of params and the body.
         Zips param identifiers with values from expression list, and executes body in a new frame*)
-     | E.Call (func, l) ->
-       let (vl, sigma') = eval_all l sigma f in
+     | E.Call (func, llist) ->
+       let (vl, sigma') = eval_all llist sigma f l in
        (match Fun.findFunc f func with
        | None -> (try
                      let v = Api.do_call func vl in
                      (v, sigma')
                  with
+                     | SecurityError -> raise @@ SecurityError
+                     | TypeError s -> raise @@ TypeError s
                      | _ -> raise @@ UndefinedFunction func)
        | Some (xl, sl) ->
        let xvl = zip xl vl in
        let sigma2 = Fun.initFun xvl in
-       (match exec_stm (S.Block sl) sigma2 f with
+       (match exec_stm (S.Block sl) sigma2 f l with
         | ReturnFrame v -> (v, sigma')
         | _ -> failwith "Not a return frame"))
  
    (*HELPER: Given a list of expressions and an environment, returns list of values from expressions and updated environment frame*)
-   and eval_all(el: E.t list) (sigma: Env.t) (f: Fun.t) : Value.t list * Env.t =
+   and eval_all(el: E.t list) (sigma: Env.t) (f: Fun.t)(l: SecurityLabel.t ): Value.t list * Env.t =
    match el with
    | [] -> ([], sigma)
    | x :: xs ->
-     let (v, sigma') = eval sigma x f  in
-     let (vs, sigma2) = eval_all xs sigma' f in
+     let (v, sigma') = eval sigma x f l  in
+     let (vs, sigma2) = eval_all xs sigma' f l in
      (v::vs, sigma2)
  
      (* FUNCTION exec_stm (recursive): Executes statements. Takes in statement stm, environment sigma, and function t and returns the updated environment. *)
-     and exec_stm (stm : S.t) (sigma : Env.t) (f : Fun.t) : Env.t =
+     and exec_stm (stm : S.t) (sigma : Env.t) (f : Fun.t) (l : SecurityLabel.t) : Env.t =
        match stm with
        (* Skip statement. Case where there is no "else" within an if statement. *)
        | S.Skip -> sigma
        (* Variable declaration. Accounts for multiple declarations within a line (therefore taking a list). Evaluates expression and assigns values to its variables (recursively within list). *)
-       | S.VarDec l ->
-         (match l with
+       | S.VarDec llist ->
+         (match llist with
           | [] -> sigma
           | (var, e) :: xs ->
            match e with
            | Some e' ->
-             let (v, sigma') = eval sigma e' f in
+             let (v, sigma') = eval sigma e' f l in
              let sigma2 = Env.newVarDec sigma' var v in
-             exec_stm (S.VarDec xs) sigma2 f
-           | None -> let sigma' = Env.newVarDec sigma var Value.V_Undefined in
-             exec_stm (S.VarDec xs) sigma' f)
+             exec_stm (S.VarDec xs) sigma2 f l
+           | None -> let sigma' = Env.newVarDec sigma var (Value.Val(Primval.V_None, l)) in
+             exec_stm (S.VarDec xs) sigma' f l)
        (* Evaluates expression within statement. *)
        | S.Expr e ->
-         let (_, sigma') = eval sigma e f in
+         let (_, sigma') = eval sigma e f l in
          sigma'
-       (*BLOCK MATCH: Given a list of statements, adds a new environment to environment stack, evaluates the whole list of statements under the current frame,
+       (* DONE: BLOCK MATCH: Given a list of statements, adds a new environment to environment stack, evaluates the whole list of statements under the current frame,
           and removes top environment frame when finished*)
-       | S.Block l -> (let sigma' = Env.addBlock sigma in
-                         let sigma2 = stm_list l sigma' f in
+       | S.Block slist -> (let sigma' = Env.addBlock sigma in
+                         let sigma2 = stm_list slist sigma' f l in
                              match sigma2 with
                              | Env.FunctionFrame _ -> Env.removeBlock sigma2
                              | Env.ReturnFrame _ -> sigma2)
        (* Executes if statements. Evaluates boolean expression e (accounting for type errors), and recursively executes statement based on its result. *)
        | S.If (e, s0, s1) ->
-         let (v, sigma') = eval sigma e f in
-         (match v with
-          | Value.V_Bool true -> exec_stm s0 sigma' f
-          | Value.V_Bool false -> exec_stm s1 sigma' f
+         let (Value.Val (v1,l1), sigma') = eval sigma e f l in
+         (match v1 with
+          | Primval.V_Bool true -> exec_stm s0 sigma' f l1
+          | Primval.V_Bool false -> exec_stm s1 sigma' f l1
           | _ -> raise (TypeError "Non-boolean value in if condition"))
        (*WHILE MATCH: Given an expression and a body, evaluates expression and continues to evaluate body until expression returns false*)
-       | S.While (e, s) -> loop e s sigma f
+       | S.While (e, s) -> loop e s sigma f l
        (* Return case with value from expression e. Calls helper function to create a return frame with value v. *)
        | S.Return Some e ->
-         let (v, _) = eval sigma e f in
+         let (v, _) = eval sigma e f l in
          Env.newReturnFrame v
        (* Return case with no value. Creates new return frame with None. *)
-       | S.Return None -> Env.newReturnFrame Value.V_None
-       (*FOR MATCH: Given a declaration, expression, expression and body, declares or assigns value to identifier, checks to see if identifier holds a certain condition,
-          then increments identifier. If first expression is true, then the body is executed.*)
-       (* | S.For (dec, e1, e2, sl) ->
-         (match dec with
-          | S.VarDec l -> let sigma' = Env.addBlock sigma in 
-                         exec_stm (S.VarDec l) sigma' f |> loop3 e1 e2 sl f |> Env.removeBlock
-          | S.Expr exp ->
-            (match exp with
-             | E.Assign (_, _) -> let (_, sigma') = eval sigma exp f in loop2 e1 e2 sl f sigma'
-             | _ -> failwith "Invalid expression in for loop") *)
-          (* | _ -> failwith "Invalid for loop declaration") *)
+       | S.Return None -> Env.newReturnFrame (Value.Val (Primval.V_None,l))
      (*HELPER: For while loops. Evaluates given expression under the environment frame. If false then returns updated frame. If true then adds a new environment frame onto frame stack.
         Then checks evaluates the block. If a return frame is given, we return said return frame. Else, we evaluate the loop again. After finished, we remove top
         environment frame or return return frame.*)
-     and loop (e : E.t) (s : S.t) (sigma : Env.t) (f : Fun.t) : Env.t =
-       let (v, sigma') = eval sigma e f in
-       match v with
-       | Value.V_Bool false -> sigma'
-       | Value.V_Bool true ->
+     and loop (e : E.t) (s : S.t) (sigma : Env.t) (f : Fun.t) (l: SecurityLabel.t): Env.t =
+       let (Value.Val(b,l'), sigma') = eval sigma e f l in
+       match b with
+       | Primval.V_Bool false -> sigma'
+       | Primval.V_Bool true ->
         ( match s with
          | S.Block s' -> let sigma2 = Env.addBlock sigma' in
-         let sigma3 = stm_list s' sigma2 f in
+         let sigma3 = stm_list s' sigma2 f l' in
          (match sigma3 with
           | Env.ReturnFrame _ -> sigma3
-          | Env.FunctionFrame _ -> let sigma4 = loop e s sigma3 f in
+          | Env.FunctionFrame _ -> let sigma4 = loop e s sigma3 f l in
                                      (match sigma4 with
                                      | Env.FunctionFrame _ ->  Env.removeBlock sigma4
                                      | Env.ReturnFrame _ -> sigma4))
-         | _ -> let sigma2 = exec_stm s sigma' f in
+         | _ -> let sigma2 = exec_stm s sigma' f l' in
                (match sigma2 with
                   | Env.ReturnFrame _ -> sigma2
-                  | Env.FunctionFrame _ -> loop e s sigma2 f))
+                  | Env.FunctionFrame _ -> loop e s sigma2 f l))
        | _ -> raise (TypeError "Non-boolean value in while condition")
  
-     (*HELPER: For for loops. Used for case when first statement given in for loop is an identifier declaration. Similar structure to that of While loops*)
-     and loop3 (e : E.t) (incr : E.t) (s : S.t) (f : Fun.t) (sigma : Env.t): Env.t =
-     let (v, sigma') = eval sigma e f in
-           match v with
-           | Value.V_Bool false -> sigma'
-           | Value.V_Bool true ->
-            ( match s with
-             | S.Block s' -> let sigma2 = sigma' in
-             let sigma3 = stm_list s' sigma2 f in
-             (match sigma3 with
-              | Env.ReturnFrame _ -> sigma3
-              | Env.FunctionFrame _ -> let (_,sigma3') = eval sigma3 incr f in
-                                         let sigma4 = loop3 e incr s f sigma3' in
-                                         (match sigma4 with
-                                         | Env.FunctionFrame _ ->  sigma4
-                                         | Env.ReturnFrame _ -> sigma4))
-             | _ -> let sigma2 = exec_stm s sigma' f in
-                   (match sigma2 with
-                      | Env.ReturnFrame _ -> sigma2
-                      | Env.FunctionFrame _ -> loop3 e incr s f sigma2))
-           | _ -> raise (TypeError "Non-boolean value in while condition")
-     (*HELPER: For for loops. Used for when given statement in for loop is an expression assignment. Folllows similar structure to while loops.*)
-     and loop2 (e : E.t) (incr : E.t) (s : S.t) (f : Fun.t) (sigma : Env.t): Env.t =
-     let (v, sigma') = eval sigma e f in
-           match v with
-           | Value.V_Bool false -> sigma'
-           | Value.V_Bool true ->
-            ( match s with
-             | S.Block s' -> let sigma2 = Env.addBlock sigma' in
-             let sigma3 = stm_list s' sigma2 f in
-             (match sigma3 with
-              | Env.ReturnFrame _ -> sigma3
-              | Env.FunctionFrame _ -> let (_,sigma3') = eval sigma3 incr f in
-                                         let sigma4 = loop2 e incr s f sigma3' in
-                                         (match sigma4 with
-                                         | Env.FunctionFrame _ ->  Env.removeBlock sigma4
-                                         | Env.ReturnFrame _ -> sigma4))
-             | _ -> let sigma2 = exec_stm s sigma' f in
-                   (match sigma2 with
-                      | Env.ReturnFrame _ -> sigma2
-                      | Env.FunctionFrame _ -> loop2 e incr s f sigma2))
-           | _ -> raise (TypeError "Non-boolean value in while condition")
  
      (*HELPER: Given list of statements, evalates each statement under environment given and updated.*)
-     and stm_list (ss : S.t list) (sigma : Env.t) (f : Fun.t) : Env.t =
+     and stm_list (ss : S.t list) (sigma : Env.t) (f : Fun.t) (l : SecurityLabel.t): Env.t =
        match ss with
        | [] -> sigma
        | s :: rest ->
-         let sigma' = exec_stm s sigma f in
+         let sigma' = exec_stm s sigma f l in
          (match sigma' with
-          | Env.FunctionFrame _ -> stm_list rest sigma' f
+          | Env.FunctionFrame _ -> stm_list rest sigma' f l
           | Env.ReturnFrame _ -> sigma')
      
  
@@ -627,7 +586,7 @@ module Primval = struct
          | None -> ()
          | Some (_, stmt_list) ->
              let env = Env.newFuncFrame in
-             let _ = exec_stm (S.Block stmt_list) env f in
+             let _ = exec_stm (S.Block stmt_list) env f SecurityLabel.Low in
                  ()
  
  
